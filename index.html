@@ -24,74 +24,122 @@
   <meta name="msapplication-TileColor" content="#3372DF">
   <meta name="msapplication-navbutton-color" content="#303F9F">
 
-  <!-- Material Design Lite -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue_grey-orange.min.css">
-  <script src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-  <link rel="stylesheet" type="text/css" href="main.css">
+  <!-- Materialize -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
 </head>
 
 <body>
 
-<div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header">
-
-  <section id="whenSignedOut">
-    <!-- Splash screen -->
-    <h3 class="logo">Snabbpokalen</h3>
-    <div>
-      <button id="signInBtn" class="mdl-button--raised mdl-button mdl-js-button mdl-js-ripple-effect"><i class="material-icons">account_circle</i> Sign in with Google</button>
-    </div>
-  </section>
-
-  <section id="whenSignedIn" hidden="true">
-<!-- Header section containing logo and menu -->
-<header class="header mdl-layout__header mdl-color-text--white mdl-color--light-blue-700">
-
-  <div class="mdl-layout__header-row titlebar">
-    <h3 class="logo">Snabbpokalen</h3>
-    <button id="signOutBtn" class="mdl-button--raised mdl-button mdl-js-button mdl-js-ripple-effect"><i class="material-icons">account_circle</i> Sign out</button>
-  </div>
-
-  <!-- Navigation Bar -->
-  <div class="tab mdl-layout__header-row mdl-color--light-blue-600">
-    <div class="mdl-tab">
-      <div id="menu-recent" class="mdl-layout__tab is-active mdl-button mdl-js-button mdl-js-ripple-effect">
-        <i class="material-icons">new_releases</i> Alpha
+  <div id="whenSignedOut">
+    <div class="container">
+      <h1 class="header center orange-text">Snabbpokalen</h1>
+      <div class="row center">
+        <h5 class="header col s12 light">För fler små tävlingar</h5>
       </div>
-      <div id="menu-my-posts" class="mdl-layout__tab mdl-button mdl-js-button mdl-js-ripple-effect">
-        <i class="material-icons">home</i> Beta
-      </div>
-      <div id="menu-my-top-posts" class="mdl-layout__tab mdl-button mdl-js-button mdl-js-ripple-effect">
-        <i class="material-icons">trending_up</i> Gamma
+      <div class="row center">
+        <button id="signInBtn" class="btn-large waves-effect waves-light orange">Logga in med Google</button>
       </div>
     </div>
   </div>
-</header>
 
-<main class="mdl-layout__content mdl-color--grey-100">
+  <div id="whenSignedIn" hidden="true">
 
-    <div id="userDetails"></div>
+    <nav class="nav-extended">
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo">Snabbpokalen</a>
+        <ul class="right">
+          <li<a id="signOutBtn" class="waves-effect waves-light btn">Logga ut</a></li>
+        </ul>
+      </div>
+      <div class="nav-content">
+        <ul class="tabs tabs-transparent">
+          <li class="tab"><a href="#profil"><i class="material-icons left">account_circle</i>Min profil</a></li>
+          <li class="tab"><a class="active" href="#tavlingar"><i class="material-icons left">sports_martial_arts</i>Tävling</a></li>
+          <li class="tab"><a href="#resultat"><i class="material-icons left">military_tech</i>Resultat</a></li>
+        </ul>
+      </div>
+    </nav>
 
-    <section>
-      <h2>Test</h2>
-      <ul id="thingsList"></ul>
-      <input class="mdl-textfield__input" type="text" id="belt" value="Bältesgrad">
-      <button id="createThing" class="mdl-button mdl-js-button mdl-button--fab mdl-color--amber-400 mdl-shadow--4dp mdl-js-ripple-effect" id="add">
-        <i class="material-icons">mode_edit</i>
-      </button>
-    </section>
-</main>
+    <div id="profil" class="col s12">
+      <div class="container">
+        <h2>Fyll i dina uppgifter här</h2>
+        <p>
+          Personuppgifter sparas för att skapa lottning på tävlingar och presentera resultat. Du kan när som helst gå in och ändra din egen profil här.
+        </p>
+        <div class="row">
+          <form class="col s12">
+            <div class="row">
+              <div class="input-field col s12">
+                <i class="material-icons prefix">account_circle</i>
+                <input id="userName" type="text" class="validate">
+                <label for="icon_prefix">Namn</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s2">
+                <input value="6" id="userBeltGrade" type="number" class="validate">
+                <label for="userBeltGrade">Bältesgrad</label>
+              </div>
+              <div class="input-field col s10">
+                <select id="userBeltType">
+                  <option value="mon">Mon</option>
+                  <option value="kyu" selected>Kyu</option>
+                  <option value="dan">Dan</option>
+                </select>
+                <label>Bältestyp</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <i class="material-icons prefix">home</i>
+                <input id="userDojo" type="text" class="validate">
+                <label for="dojo">Dojo (klubb)</label>
+              </div>
+            </div>
+          <a id="userSaveButton" class="waves-effect waves-light btn">Spara</a>
+          </form>
+        </div>
+      </div>
+    </div>
 
-</section>
-</div>
 
+    <div id="tavlingar" class="col s12">
+      <div class="container">
+        <h2>Ny tävling</h2>
+        <div class="row">
+          <div class="input-field col s6">
+            <input id="createCompetitionDate" type="text" class="datepicker">
+            <label for="createCompetitionDate">Datum</label>
+          </div>
+          <div class="input-field col s6">
+            <input id="createCompetitionTime" type="text" class="timepicker">
+            <label for="createCompetitionTime">Tid</label>
+          </div>
+          <div class="input-field col s12">
+            <i class="material-icons prefix">home</i>
+            <input id="createCompetitionPlace" type="text" class="validate">
+            <label for="createCompetitionPlace">Plats</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="resultat" class="col s12">
+      Test 3
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    // Initialise materialize components
+    M.AutoInit();
+  </script>
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js";
-    //import { getAuth } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-auth.js";
-    //import { getFirestore } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-firestore.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
     // Your web app's Firebase configuration
@@ -108,7 +156,6 @@
   </script>
 
   <script src="app.js" defer type="module"></script>
-
 
 </body>
 
