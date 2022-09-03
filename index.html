@@ -40,8 +40,13 @@
       <div class="row center">
         <h5 class="header col s12 light">För fler små tävlingar</h5>
       </div>
-      <div class="row center">
+      <div class="row center" id="signInDiv" hidden="true">
         <button id="signInBtn" class="btn-large waves-effect waves-light orange">Logga in med Google</button>
+      </div>
+      <div class="row center" id="signInProgress">
+        <div class="progress">
+          <div class="indeterminate"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -49,6 +54,7 @@
   <div id="whenSignedIn" hidden="true">
 
     <nav class="nav-extended">
+      <div class="container">
       <div class="nav-wrapper">
         <a href="#" class="brand-logo">Snabbpokalen</a>
         <ul class="right">
@@ -61,6 +67,7 @@
           <li class="tab"><a class="active" href="#tavlingar"><i class="material-icons left">sports_martial_arts</i>Tävling</a></li>
           <li class="tab"><a href="#resultat"><i class="material-icons left">military_tech</i>Resultat</a></li>
         </ul>
+      </div>
       </div>
     </nav>
 
@@ -109,20 +116,42 @@
 
     <div id="tavlingar" class="col s12">
       <div class="container">
-        <h2>Ny tävling</h2>
-        <div class="row">
-          <div class="input-field col s6">
-            <input id="createCompetitionDate" type="text" class="datepicker">
-            <label for="createCompetitionDate">Datum</label>
+        <h2>Kommande tävlingar</h2>
+        <ul id="competitionsList" class="collection">
+          <li class="collection-item">
+            <b class="title">Title</b>
+            <p>First Line
+            <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+          </li>
+        </ul>
+        <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Skapa ny tävling</a>
+        <div id="modal1" class="modal bottom-sheet", style="max-height: 100%; overflow: visible">
+          <div class="modal-content">
+            <form class="col s12">
+              <div class="row">
+                <div class="input-field col s6">
+                  <input id="createCompetitionDate" type="text" class="datepicker">
+                  <label for="createCompetitionDate">Datum</label>
+                </div>
+                <div class="input-field col s6">
+                  <input id="createCompetitionTime" type="text" class="timepicker">
+                  <label for="createCompetitionTime">Tid</label>
+                </div>
+                <div class="input-field col s12">
+                  <i class="material-icons prefix">home</i>
+                  <input id="createCompetitionPlace" type="text" class="validate">
+                  <label for="createCompetitionPlace">Plats</label>
+                </div>
+                <div class="input-field col s12">
+                  <textarea id="competitionCreateText" class="materialize-textarea"></textarea>
+                  <label for="competitionCreateText">Övrig info (valfri)</label>
+                </div>
+              </div>
+            </form>
           </div>
-          <div class="input-field col s6">
-            <input id="createCompetitionTime" type="text" class="timepicker">
-            <label for="createCompetitionTime">Tid</label>
-          </div>
-          <div class="input-field col s12">
-            <i class="material-icons prefix">home</i>
-            <input id="createCompetitionPlace" type="text" class="validate">
-            <label for="createCompetitionPlace">Plats</label>
+          <div class="modal-footer">
+            <a class="modal-close waves-effect btn-flat">Avbryt</a>
+            <a id="competitionCreateButton" class="modal-close waves-effect green btn">Spara tävling</a>
           </div>
         </div>
       </div>
