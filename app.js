@@ -150,75 +150,98 @@ function prefillCompetitionInfo(data) {
 function dateStrFromCompetition(competitionData) {
     let d = new Date(competitionData.time.seconds*1000);
     return d.toLocaleString('sv-SE', {
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
     });
 }
 
 function loadCompetitions() {
     // Redraw competitions list on every edit
     const q = query(collection(db, "competitions"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const unsubscribe = onSnapshot(q, querySnapshot => {
         competitionsList.innerHTML = '';
         querySnapshot.forEach(competition => {
-            const data = competition.data();
             let item = document.createElement('li');
+            competitionsList.appendChild(item);
+            const data = competition.data();
+            const regSnapshot = query(collection(db, "registrations"), where("competition", "==", competition.id));
+
             let header = document.createElement('div');
             header.classList.add("collapsible-header");
             item.appendChild(header);
-            header.innerHTML = `<i class="material-icons">event</i><b>${data.place}</b>&nbsp;
-            ${dateStrFromCompetition(data)}
-            <span class="badge" data-badge-caption="anmälda">0</span></div>`
+
             let body = document.createElement('div');
             body.classList.add("collapsible-body");
-            body.innerHTML = `<p>${data.infoText ? data.infoText : ''}`;
             item.appendChild(body);
-            // If user is the creator of the competition,
-            if (data.uid == currentUser.uid) {
-                // Add an edit button
-                /*
-                let editButton = document.createElement('a');
-                editButton.classList.add("modal-trigger");
-                editButton.href="#competitionEditModal"
-                editButton.onclick = ()=>{
-                    prefillCompetitionInfo(data);
-                };
-                editButton.innerHTML = ` <i class="material-icons">edit</i>`
-                header.appendChild(editButton);
-                */
-                let removeButton = document.createElement('a');
-                removeButton.onclick = event=>{
-                    event.stopPropagation();
-                    deleteDoc(doc(db, 'competitions', competition.id)).then(()=>{
-                        M.toast({
-                            html: 'Tävlingen har tagits bort',
-                            displayLength: 6000
-                        });
-                    })
-                };
-                removeButton.innerHTML = ` <i class="material-icons">delete</i>`
-                header.appendChild(removeButton);
-                // Add a start button
-                let startButton = document.createElement('a');
-                startButton.innerHTML = `<i class="material-icons">start</i>`
-                header.appendChild(startButton);
-            }
-            // Add a sign-up button
-            let signUpButton = document.createElement('a');
-            signUpButton.classList.add("modal-trigger");
-            signUpButton.href="#competitionSignUpModal";
-            signUpButton.onclick = (event)=>{
-                competitionSignUpSelectCompetition.innerHTML = '';
-                querySnapshot.forEach(c => {
-                    const d = c.data();
-                    const selected = competition.id == c.id ? ' selected': '';
-                    competitionSignUpSelectCompetition.innerHTML += `<option value="${c.id}"${selected}>${d.place} - ${dateStrFromCompetition(d)}</option>`;
-                });
-                M.FormSelect.init(competitionSignUpSelectCompetition);
-            };
-            signUpButton.innerHTML = `<i class="material-icons">person_add</i>`
-            header.appendChild(signUpButton);
 
-            competitionsList.appendChild(item);
+            onSnapshot(regSnapshot, regs=>{
+                header.innerHTML = '';
+                body.innerHTML = '';
+                let registrations = [];
+                regs.forEach(r=>registrations.push(r));
+
+                header.innerHTML = `<i class="material-icons">event</i><b>${data.place}</b>&nbsp;
+                ${dateStrFromCompetition(data)}
+                <span class="badge" data-badge-caption="anmälda">${registrations.length}</span></div>`
+
+                body.innerHTML = `<p>${data.infoText ? data.infoText : ''}`;
+                let registered = false;
+                registrations.forEach(r=>{
+                    if (r.data().uid == currentUser.uid) {
+                        registered = r.id;
+                    }
+                    let divisions = ['hokei', 'jissen'].filter(d=>r.data()[d]);
+                    getDoc(doc(db, "users", r.data().uid)).then(user=>
+                        body.innerHTML += `<p>${user.data().name}: ${divisions.join(', ')}</p>`
+                    )
+                })
+                // If user is the creator of the competition,
+                if (data.uid == currentUser.uid) {
+                    let removeButton = document.createElement('a');
+                    removeButton.onclick = event=>{
+                        event.stopPropagation();
+                        deleteDoc(doc(db, 'competitions', competition.id)).then(()=>{
+                            M.toast({
+                                html: 'Tävlingen har tagits bort',
+                                displayLength: 6000
+                            });
+                        })
+                    };
+                    removeButton.innerHTML = ` <i class="material-icons">delete</i>`
+                    header.appendChild(removeButton);
+                    // Add a start button
+                    let startButton = document.createElement('a');
+                    startButton.innerHTML = `<i class="material-icons">start</i>`
+                    header.appendChild(startButton);
+                }
+                // Add a sign-up button
+                let signUpButton = document.createElement('a');
+                if (!registered) {
+                    signUpButton.classList.add("modal-trigger");
+                    signUpButton.href="#competitionSignUpModal";
+                    signUpButton.onclick = (event)=>{
+                        competitionSignUpSelectCompetition.innerHTML = '';
+                        querySnapshot.forEach(c => {
+                            const d = c.data();
+                            const selected = competition.id == c.id ? ' selected': '';
+                            competitionSignUpSelectCompetition.innerHTML += `<option value="${c.id}"${selected}>${d.place} - ${dateStrFromCompetition(d)}</option>`;
+                        });
+                        M.FormSelect.init(competitionSignUpSelectCompetition);
+                    };
+                    signUpButton.innerHTML = `<i class="material-icons">person_add</i>`
+                } else {
+                    signUpButton.onclick = (event)=>{
+                        event.stopPropagation();
+                        deleteDoc(doc(db, 'registrations', registered)).then(()=>{
+                            M.toast({
+                                html: 'Din anmälan har tagits bort',
+                                displayLength: 6000
+                            });
+                        })
+                    };
+                    signUpButton.innerHTML = `<i class="material-icons">person_remove</i>`
+                }
+                header.appendChild(signUpButton);
+            });
         });
     });
 }
